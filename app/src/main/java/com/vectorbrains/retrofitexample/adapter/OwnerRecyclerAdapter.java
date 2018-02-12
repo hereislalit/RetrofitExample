@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,8 @@ import java.util.List;
 public class OwnerRecyclerAdapter extends Adapter<OwnerRecyclerAdapter.OwnerViewHolder> {
     private List<Owner> ownerList;
     private RequestManager requestManager;
+    private OnItemClickListener itemClickListener;
+
     public OwnerRecyclerAdapter(Context context, List<Owner> owners) {
         this.ownerList = owners;
         requestManager = Glide.with(context);
@@ -34,8 +37,9 @@ public class OwnerRecyclerAdapter extends Adapter<OwnerRecyclerAdapter.OwnerView
 
     @Override
     public void onBindViewHolder(OwnerViewHolder holder, int position) {
-        if(position >=0 && position < ownerList.size()){
+        if (position >= 0 && position < ownerList.size()) {
             Owner owner = ownerList.get(position);
+            holder.position = position;
             holder.tvOwnerName.setText(owner.getId() + AppConstant.SPACE_STRING + owner.getLogin());
             requestManager.load(owner.getAvatarUrl()).placeholder(R.drawable.ic_placeholder).crossFade().into(holder.ivOwnerImage);
         }
@@ -49,11 +53,28 @@ public class OwnerRecyclerAdapter extends Adapter<OwnerRecyclerAdapter.OwnerView
     public class OwnerViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivOwnerImage;
         public TextView tvOwnerName;
+        public int position;
 
         public OwnerViewHolder(View itemView) {
             super(itemView);
             ivOwnerImage = (ImageView) itemView.findViewById(R.id.imageview_owner_image);
             tvOwnerName = (TextView) itemView.findViewById(R.id.textview_owner_name);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (itemClickListener != null) {
+                        itemClickListener.onItemClicked(position);
+                    }
+                }
+            });
         }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.itemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClicked(int position);
     }
 }
