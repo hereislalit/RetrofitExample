@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">RetrofitExample</string>
+    <string name="try_again">Try Again</string>
+    <string name="error_occurred">Some error has occurred while loading data.</string>
+</resources>
